@@ -15,9 +15,6 @@
     --primary-dark: #2B3674;
     --accent: #3b82f6;
     --accent-hover: #2563eb;
-    --success: #05CD99;
-    --warning: #FFB547;
-    --danger: #EE5D50;
     --bg-body: #F4F7FE;
     --surface: #FFFFFF;
     --card-bg: rgba(255, 255, 255, 0.65);
@@ -88,17 +85,40 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
 .header-left p { margin: 0; }
 .header-right { text-align: right; }
 
+/* --- SELECTOR DE VISTA (TABS HERO) --- */
+.view-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+.view-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; padding: 28px 20px; border-radius: var(--radius); cursor: pointer;
+    border: 2px solid var(--border); background: var(--surface);
+    transition: all 0.3s ease; position: relative; overflow: hidden;
+}
+.view-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(67,24,255,0.05));
+    opacity: 0; transition: opacity 0.3s;
+}
+.view-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(59, 130, 246, 0.15); border-color: var(--accent); }
+.view-btn:hover::before { opacity: 1; }
+
+.view-btn.active {
+    border-color: var(--accent); background: linear-gradient(135deg, #3b82f6, #4318FF);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
+}
+.view-btn.active::before { opacity: 0; }
+.view-btn.active .view-icon,
+.view-btn.active .view-label,
+.view-btn.active .view-count { color: white; -webkit-text-fill-color: white; }
+
+.view-icon { font-size: 2.2rem; line-height: 1; }
+.view-label { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); transition: color 0.3s; }
+.view-count { font-size: 0.82rem; font-weight: 600; color: var(--text-sec); transition: color 0.3s; }
+
 /* --- FILTROS --- */
-.filter-bar { padding: 20px 24px; margin-bottom: 24px; }
+.filter-bar { padding: 16px 24px; margin-bottom: 24px; }
 .filter-row { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .filter-actions { display: flex; gap: 8px; padding-bottom: 2px; }
-
-/* --- KPI CARDS --- */
-.kpi-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
-.kpi-card { text-align: center; padding: 20px; }
-.kpi-icon { font-size: 2rem; margin-bottom: 8px; }
-.kpi-value { font-size: 2rem; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
-.kpi-label { font-size: 0.85rem; color: var(--text-sec); font-weight: 600; margin-top: 4px; }
 
 /* --- RANKING --- */
 .ranking-section { margin-bottom: 24px; }
@@ -117,9 +137,6 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
 .rank-name { flex: 1; font-weight: 600; font-size: 0.95rem; color: var(--text-main); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rank-desc { display: block; font-size: 0.78rem; font-weight: 400; color: var(--text-sec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* --- GRID 2 COLUMNAS --- */
-.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 24px; }
-
 /* --- FOOTER --- */
 .site-footer { text-align: center; padding: 24px; color: var(--text-sec); font-size: 0.85rem; margin-top: 20px; }
 
@@ -137,17 +154,16 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
     .header-left h1 { font-size: 1.15rem; }
     .header-left p { font-size: 0.78rem; }
     .header-right { text-align: center; }
+    .view-selector { gap: 12px; margin-bottom: 16px; }
+    .view-btn { padding: 20px 14px; gap: 6px; }
+    .view-icon { font-size: 1.8rem; }
+    .view-label { font-size: 0.95rem; }
+    .view-count { font-size: 0.75rem; }
     .filter-bar { padding: 14px 16px; margin-bottom: 16px; }
     .filter-row { flex-direction: column; align-items: stretch; gap: 12px; }
     .filter-actions { justify-content: center; }
     .btn { padding: 10px 20px; font-size: 0.9rem; min-height: 44px; }
     .form-select { padding: 10px 12px; font-size: 1rem; min-height: 44px; }
-    .kpi-row { gap: 12px; margin-bottom: 16px; }
-    .kpi-card { padding: 14px 10px; }
-    .kpi-icon { font-size: 1.5rem; margin-bottom: 4px; }
-    .kpi-value { font-size: 1.4rem; }
-    .kpi-label { font-size: 0.75rem; }
-    .grid-2 { grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
     .ranking-section { margin-bottom: 0; }
     .ranking-header { margin-bottom: 10px; }
     .ranking-header h2 { font-size: 1rem; }
@@ -170,15 +186,14 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
     .header-logo { height: 28px; }
     .header-left h1 { font-size: 0.95rem; }
     .header-left p { font-size: 0.72rem; }
+    .view-selector { gap: 8px; margin-bottom: 12px; }
+    .view-btn { padding: 16px 10px; gap: 4px; border-radius: 12px; }
+    .view-icon { font-size: 1.5rem; }
+    .view-label { font-size: 0.85rem; }
+    .view-count { font-size: 0.7rem; }
     .filter-bar { padding: 10px; margin-bottom: 10px; }
     .filter-row { gap: 10px; }
-    .kpi-row { gap: 8px; margin-bottom: 10px; }
-    .kpi-card { padding: 10px 8px; }
-    .kpi-icon { font-size: 1.1rem; margin-bottom: 2px; }
-    .kpi-value { font-size: 1.1rem; }
-    .kpi-label { font-size: 0.68rem; }
     .card { padding: 10px; }
-    .grid-2 { gap: 10px; }
     .rank-row { padding: 8px 10px; gap: 8px; margin-bottom: 3px; border-radius: 8px; }
     .rank-pos { width: 24px; height: 24px; font-size: 0.65rem; }
     .rank-pos.pos-1, .rank-pos.pos-2, .rank-pos.pos-3 { box-shadow: none; }
@@ -210,62 +225,61 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
     <!-- CONTENIDO PRINCIPAL -->
     <div class="container">
 
+        <!-- SELECTOR DE VISTA -->
+        <div class="view-selector">
+            <div class="view-btn active" id="btnArticulos" onclick="switchView('articulos')">
+                <span class="view-icon">📦</span>
+                <span class="view-label">Ver Articulos</span>
+                <span class="view-count" id="countArticulos">--</span>
+            </div>
+            <div class="view-btn" id="btnEstilos" onclick="switchView('estilos')">
+                <span class="view-icon">🤝</span>
+                <span class="view-label">Ver Estilos</span>
+                <span class="view-count" id="countEstilos">--</span>
+            </div>
+        </div>
+
         <!-- FILTROS -->
         <div class="glass-card filter-bar">
             <div class="filter-row">
                 <div class="form-group">
                     <label class="form-label">Top N</label>
-                    <select id="topN" class="form-select">
+                    <select id="topN" class="form-select" onchange="applyFilters()">
                         <option value="10">Top 10</option>
                         <option value="20">Top 20</option>
                         <option value="50">Top 50</option>
                         <option value="100">Top 100</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="clienteFilterGroup">
                     <label class="form-label">Cliente</label>
-                    <select id="filterCliente" class="form-select">
+                    <select id="filterCliente" class="form-select" onchange="applyFilters()">
                         <option value="">Todos</option>
                     </select>
                 </div>
                 <div class="filter-actions">
-                    <button onclick="applyFilters()" class="btn btn-accent">Aplicar</button>
                     <button onclick="clearFilters()" class="btn btn-secondary">Limpiar</button>
                 </div>
             </div>
         </div>
 
-        <!-- KPIs -->
-        <div class="kpi-row">
-            <div class="card kpi-card">
-                <div class="kpi-icon">📦</div>
-                <div class="kpi-value" id="kpiArticulos">--</div>
-                <div class="kpi-label">Total Artículos</div>
+        <!-- RANKING ARTICULOS -->
+        <div id="panelArticulos" class="card ranking-section">
+            <div class="ranking-header">
+                <h2>📦 Articulos con Mayor Volumen</h2>
             </div>
-            <div class="card kpi-card">
-                <div class="kpi-icon">🎨</div>
-                <div class="kpi-value" id="kpiEstilos">--</div>
-                <div class="kpi-label">Total Estilos</div>
+            <div id="rankingArticulos" class="ranking-table">
+                <div class="spinner"></div>
             </div>
         </div>
 
-        <!-- RANKINGS lado a lado -->
-        <div class="grid-2">
-            <div class="card ranking-section">
-                <div class="ranking-header">
-                    <h2>📦 Artículos con Mayor Volumen</h2>
-                </div>
-                <div id="rankingArticulos" class="ranking-table">
-                    <div class="spinner"></div>
-                </div>
+        <!-- RANKING ESTILO-CLIENTE -->
+        <div id="panelEstilos" class="card ranking-section hidden">
+            <div class="ranking-header">
+                <h2>🤝 Estilo-Cliente con Mayor Volumen</h2>
             </div>
-            <div class="card ranking-section">
-                <div class="ranking-header">
-                    <h2>🤝 Estilo-Cliente con Mayor Volumen</h2>
-                </div>
-                <div id="rankingEstiloCliente" class="ranking-table">
-                    <div class="spinner"></div>
-                </div>
+            <div id="rankingEstiloCliente" class="ranking-table">
+                <div class="spinner"></div>
             </div>
         </div>
 
@@ -288,6 +302,7 @@ const DATA_URL = 'https://wvxawdxfovsraatopshz.supabase.co/storage/v1/object/pub
 
 // === ESTADO ===
 let allData = null;
+let currentView = 'articulos';
 
 // === INIT ===
 document.addEventListener('DOMContentLoaded', initApp);
@@ -300,6 +315,7 @@ async function initApp() {
         allData = await resp.json();
         renderSyncInfo();
         populateClientes();
+        updateCounts();
         applyFilters();
     } catch (err) {
         console.error('Error cargando datos:', err);
@@ -309,6 +325,20 @@ async function initApp() {
         });
     }
     hideLoading();
+}
+
+// === CAMBIAR VISTA ===
+function switchView(view) {
+    currentView = view;
+    // Botones
+    document.getElementById('btnArticulos').classList.toggle('active', view === 'articulos');
+    document.getElementById('btnEstilos').classList.toggle('active', view === 'estilos');
+    // Paneles
+    document.getElementById('panelArticulos').classList.toggle('hidden', view !== 'articulos');
+    document.getElementById('panelEstilos').classList.toggle('hidden', view !== 'estilos');
+    // Mostrar filtro cliente solo en estilos
+    document.getElementById('clienteFilterGroup').style.display = view === 'estilos' ? '' : 'none';
+    applyFilters();
 }
 
 function renderSyncInfo() {
@@ -327,13 +357,18 @@ function populateClientes() {
     allData.clientes.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; select.appendChild(o); });
 }
 
+function updateCounts() {
+    if (!allData || !allData.kpis) return;
+    document.getElementById('countArticulos').textContent = formatNumber(allData.kpis.total_articulos || 0) + ' articulos';
+    document.getElementById('countEstilos').textContent = formatNumber(allData.kpis.total_estilos || 0) + ' estilos';
+}
+
 // === FILTROS ===
 function applyFilters() {
     if (!allData) return;
     const topN = parseInt(document.getElementById('topN').value) || 10;
     const cliente = document.getElementById('filterCliente').value || null;
 
-    renderKPIs(allData.kpis);
     renderRanking('rankingArticulos', allData.ranking_articulos.slice(0, topN), 'articulo', 'articulo_desc');
 
     if (cliente) {
@@ -351,11 +386,6 @@ function clearFilters() {
 }
 
 // === RENDER ===
-function renderKPIs(kpis) {
-    document.getElementById('kpiArticulos').textContent = formatNumber(kpis.total_articulos || 0);
-    document.getElementById('kpiEstilos').textContent = formatNumber(kpis.total_estilos || 0);
-}
-
 function renderRanking(containerId, data, nameField, descField) {
     const container = document.getElementById(containerId);
     if (!data || data.length === 0) {
@@ -381,10 +411,16 @@ function renderRanking(containerId, data, nameField, descField) {
 function formatNumber(n) { return n == null ? '0' : new Intl.NumberFormat('es-PE').format(Math.round(n)); }
 function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
 function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
+
+// Ocultar filtro cliente al inicio (vista articulos por defecto)
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('clienteFilterGroup').style.display = 'none';
+});
 </script>
 
 </body>
 </html>
+
 
 
 
