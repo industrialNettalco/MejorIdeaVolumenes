@@ -227,23 +227,13 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
             </div>
         </div>
 
-        <!-- RANKINGS 2 y 3 (grid 2 columnas) -->
-        <div class="grid-2">
-            <div class="card ranking-section">
-                <div class="ranking-header">
-                    <h2>🎨 Estilos con Mayor Volumen</h2>
-                </div>
-                <div id="rankingEstilos" class="ranking-table">
-                    <div class="spinner"></div>
-                </div>
+        <!-- RANKING: Estilo-Cliente (ancho completo) -->
+        <div class="card ranking-section">
+            <div class="ranking-header">
+                <h2>🤝 Estilo-Cliente con Mayor Volumen</h2>
             </div>
-            <div class="card ranking-section">
-                <div class="ranking-header">
-                    <h2>🤝 Estilo-Cliente con Mayor Volumen</h2>
-                </div>
-                <div id="rankingEstiloCliente" class="ranking-table">
-                    <div class="spinner"></div>
-                </div>
+            <div id="rankingEstiloCliente" class="ranking-table">
+                <div class="spinner"></div>
             </div>
         </div>
 
@@ -282,7 +272,7 @@ async function initApp() {
     } catch (err) {
         console.error('Error cargando datos:', err);
         document.getElementById('lastSync').textContent = 'Error al cargar datos';
-        ['rankingArticulos', 'rankingEstilos', 'rankingEstiloCliente'].forEach(id => {
+        ['rankingArticulos', 'rankingEstiloCliente'].forEach(id => {
             document.getElementById(id).innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>No se pudieron cargar los datos</p></div>';
         });
     }
@@ -313,7 +303,6 @@ function applyFilters() {
 
     renderKPIs(allData.kpis);
     renderRanking('rankingArticulos', allData.ranking_articulos.slice(0, topN), 'articulo', 'articulo_desc');
-    renderRanking('rankingEstilos', allData.ranking_estilos.slice(0, topN), 'estilo');
 
     if (cliente) {
         const ecFiltrados = allData.ranking_estilo_cliente.filter(r => r.cliente === cliente);
@@ -370,4 +359,5 @@ function hideLoading() { document.getElementById('loadingOverlay').classList.add
 
 </body>
 </html>
+
 
