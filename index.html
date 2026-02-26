@@ -204,6 +204,123 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+/* --- CONTROLES (SEARCH / SORT) --- */
+.ranking-header { flex-wrap: wrap; gap: 8px; }
+.rank-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rank-search {
+    padding: 7px 12px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+    font-size: 0.84rem; color: var(--text-main); background: var(--input-bg);
+    width: 150px; outline: none; transition: all 0.2s; font-family: inherit;
+}
+.rank-search:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); width: 180px; }
+.rank-sort {
+    padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius-xs);
+    font-size: 0.82rem; color: var(--text-main); background: var(--input-bg);
+    outline: none; cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.rank-sort:focus { border-color: var(--accent); background: white; }
+.btn-expand-all {
+    padding: 6px 12px; border-radius: var(--radius-xs); font-size: 0.78rem; font-weight: 600;
+    border: 1px solid var(--border); background: var(--input-bg); color: var(--text-sec);
+    cursor: pointer; font-family: inherit; transition: all 0.2s; white-space: nowrap;
+}
+.btn-expand-all:hover { background: white; border-color: var(--accent); color: var(--accent); }
+
+/* === TARJETAS DE ARTÍCULO === */
+.art-card {
+    border-radius: var(--radius-sm); margin-bottom: 8px;
+    border: 1px solid var(--border); background: white;
+    overflow: hidden; transition: box-shadow 0.2s, border-color 0.2s;
+}
+.art-card:hover { box-shadow: 0 2px 14px rgba(0,0,0,0.07); }
+.art-card.expanded { border-color: #93c5fd; box-shadow: 0 4px 20px rgba(59,130,246,0.1); }
+
+.art-header {
+    display: flex; align-items: center; padding: 12px 14px; gap: 12px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.art-header:active { background: rgba(0,0,0,0.02); }
+
+.art-pos {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.8rem; background: #F4F7FE; color: var(--text-light);
+}
+.art-pos.pos-1 { background: linear-gradient(135deg,#FFD700,#FFA500); color:white; box-shadow:0 3px 10px rgba(255,183,71,.4); }
+.art-pos.pos-2 { background: linear-gradient(135deg,#C0C0C0,#A8A8A8); color:white; }
+.art-pos.pos-3 { background: linear-gradient(135deg,#CD7F32,#B87333); color:white; }
+
+.art-info { flex: 1; min-width: 0; }
+.art-code  { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
+.art-desc  { font-size: 0.78rem; color: var(--text-sec); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.art-chips { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+
+.art-vol-chip {
+    font-size: 0.72rem; font-weight: 600; color: var(--text-sec);
+    background: #f1f5f9; padding: 2px 8px; border-radius: 20px;
+}
+.merma-badge {
+    display: inline-flex; align-items: center; gap: 3px; padding: 3px 10px; border-radius: 20px;
+    font-size: 0.74rem; font-weight: 800; white-space: nowrap;
+}
+.merma-low  { background: #dcfce7; color: #15803d; }
+.merma-mid  { background: #ffedd5; color: #c2410c; }
+.merma-high { background: #fee2e2; color: #b91c1c; }
+
+.art-toggle { font-size: 0.8rem; color: var(--text-light); flex-shrink: 0; transition: transform 0.25s; }
+.art-card.expanded .art-toggle { transform: rotate(180deg); color: var(--accent); }
+
+/* --- Sección de detalle (colapsa/expande) --- */
+.art-detail {
+    display: none; border-top: 1px solid #e2e8f0;
+    padding: 14px 14px 18px; background: #fafbfd;
+}
+.art-card.expanded .art-detail { display: block; }
+
+/* KPIs del artículo */
+.art-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+.art-kpi { background: white; border-radius: var(--radius-xs); padding: 10px 8px; text-align: center; border: 1px solid #e2e8f0; }
+.art-kpi-val { font-size: 1rem; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
+.art-kpi-val.warn   { color: #c2410c; }
+.art-kpi-val.danger { color: #b91c1c; }
+.art-kpi-label { font-size: 0.62rem; color: var(--text-sec); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+
+/* Barras de fallas */
+.falla-section-title {
+    font-size: 0.72rem; font-weight: 700; color: var(--text-sec);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+}
+.falla-bar-item { margin-bottom: 14px; }
+.falla-bar-item:last-child { margin-bottom: 0; }
+.falla-bar-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+.falla-bar-name { font-size: 0.88rem; font-weight: 600; color: var(--text-main); flex: 1; line-height: 1.3; }
+.falla-sector-tag { font-size: 0.68rem; font-weight: 700; color: #4338ca; background: #eef2ff; padding: 1px 6px; border-radius: 10px; margin-left: 5px; vertical-align: middle; }
+.falla-bar-kg   { font-size: 0.84rem; font-weight: 700; color: var(--text-sec); white-space: nowrap; flex-shrink: 0; }
+.falla-track { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.falla-fill  { height: 100%; border-radius: 4px; background: linear-gradient(90deg,#f97316,#dc2626); }
+.falla-pct-row { display: flex; gap: 16px; margin-top: 5px; font-size: 0.73rem; }
+.falla-pct-prod  { color: #dc2626; font-weight: 700; }
+.falla-pct-merma { color: #7c3aed; font-weight: 600; }
+.falla-no-data { font-size: 0.8rem; color: var(--text-light); font-style: italic; }
+
+@media (max-width: 768px) {
+    .rank-search { width: 110px; font-size: 0.8rem; }
+    .rank-search:focus { width: 130px; }
+    .rank-sort { font-size: 0.78rem; }
+    .rank-controls { gap: 6px; }
+    .art-kpi-val { font-size: 0.88rem; }
+    .art-kpi-label { font-size: 0.58rem; }
+    .falla-bar-name { font-size: 0.82rem; }
+    .falla-pct-row { gap: 10px; font-size: 0.69rem; }
+}
+@media (max-width: 400px) {
+    .rank-search { width: 90px; }
+    .rank-search:focus { width: 110px; }
+    .art-kpi-row { gap: 5px; }
+    .art-kpi { padding: 8px 5px; }
+    .art-kpi-val { font-size: 0.8rem; }
+}
 </style>
 </head>
 <body class="aurora-bg">
@@ -267,6 +384,15 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
         <div id="panelArticulos" class="card ranking-section">
             <div class="ranking-header">
                 <h2>📦 Articulos con Mayor Volumen</h2>
+                <div class="rank-controls">
+                    <select id="sortArticulos" class="rank-sort" onchange="applyFilters()">
+                        <option value="volumen">↓ Mayor volumen</option>
+                        <option value="merma">↓ Mayor merma %</option>
+                        <option value="balance">⚖ Balance vol+merma</option>
+                    </select>
+                    <input type="text" id="searchArticulos" class="rank-search" placeholder="🔍 Buscar..." oninput="applyFilters()">
+                    <button class="btn-expand-all" onclick="toggleAllCards()" id="btnExpandAll">+ Ver detalle</button>
+                </div>
             </div>
             <div id="rankingArticulos" class="ranking-table">
                 <div class="spinner"></div>
@@ -277,6 +403,9 @@ h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
         <div id="panelEstilos" class="card ranking-section hidden">
             <div class="ranking-header">
                 <h2>🤝 Estilo-Cliente con Mayor Volumen</h2>
+                <div class="rank-controls">
+                    <input type="text" id="searchEstilos" class="rank-search" placeholder="🔍 Buscar..." oninput="applyFilters()">
+                </div>
             </div>
             <div id="rankingEstiloCliente" class="ranking-table">
                 <div class="spinner"></div>
@@ -330,13 +459,10 @@ async function initApp() {
 // === CAMBIAR VISTA ===
 function switchView(view) {
     currentView = view;
-    // Botones
     document.getElementById('btnArticulos').classList.toggle('active', view === 'articulos');
     document.getElementById('btnEstilos').classList.toggle('active', view === 'estilos');
-    // Paneles
     document.getElementById('panelArticulos').classList.toggle('hidden', view !== 'articulos');
     document.getElementById('panelEstilos').classList.toggle('hidden', view !== 'estilos');
-    // Mostrar filtro cliente solo en estilos
     document.getElementById('clienteFilterGroup').style.display = view === 'estilos' ? '' : 'none';
     applyFilters();
 }
@@ -366,53 +492,182 @@ function updateCounts() {
 // === FILTROS ===
 function applyFilters() {
     if (!allData) return;
-    const topN = parseInt(document.getElementById('topN').value) || 10;
-    const cliente = document.getElementById('filterCliente').value || null;
+    const topN      = parseInt(document.getElementById('topN').value) || 10;
+    const cliente   = document.getElementById('filterCliente').value || null;
+    const sortMode  = document.getElementById('sortArticulos').value || 'volumen';
+    const searchArt = (document.getElementById('searchArticulos').value || '').toLowerCase().trim();
+    const searchEC  = (document.getElementById('searchEstilos').value  || '').toLowerCase().trim();
 
-    renderRanking('rankingArticulos', allData.ranking_articulos.slice(0, topN), 'articulo', 'articulo_desc');
+    let arts = [...allData.ranking_articulos];
 
-    if (cliente) {
-        const ecFiltrados = allData.ranking_estilo_cliente.filter(r => r.cliente === cliente);
-        renderRanking('rankingEstiloCliente', ecFiltrados.slice(0, topN), 'estilo_cliente');
-    } else {
-        renderRanking('rankingEstiloCliente', allData.ranking_estilo_cliente.slice(0, topN), 'estilo_cliente');
+    // Ordenar según modo
+    if (sortMode === 'merma') {
+        arts.sort((a, b) => (b.pct_merma ?? -1) - (a.pct_merma ?? -1));
+    } else if (sortMode === 'balance') {
+        arts.sort((a, b) => (b.total_merma_kg ?? 0) - (a.total_merma_kg ?? 0));
     }
+    // 'volumen' → ya viene ordenado por volumen_total desde el JSON
+
+    if (searchArt) {
+        arts = arts.filter(r =>
+            (r.articulo     || '').toLowerCase().includes(searchArt) ||
+            (r.articulo_desc|| '').toLowerCase().includes(searchArt)
+        );
+    } else {
+        arts = arts.slice(0, topN);
+    }
+    _allExpanded = false;
+    const btn = document.getElementById('btnExpandAll');
+    if (btn) btn.textContent = '+ Ver detalle';
+    renderRanking('rankingArticulos', arts, 'articulo', 'articulo_desc', true);
+
+    // --- Estilo-Cliente: filtrar + topN ---
+    let ecs = cliente
+        ? allData.ranking_estilo_cliente.filter(r => r.cliente === cliente)
+        : [...allData.ranking_estilo_cliente];
+
+    if (searchEC) {
+        ecs = ecs.filter(r =>
+            (r.estilo        || '').toLowerCase().includes(searchEC) ||
+            (r.cliente       || '').toLowerCase().includes(searchEC) ||
+            (r.estilo_cliente|| '').toLowerCase().includes(searchEC)
+        );
+    } else {
+        ecs = ecs.slice(0, topN);
+    }
+    renderRanking('rankingEstiloCliente', ecs, 'estilo_cliente', null, false);
 }
 
 function clearFilters() {
     document.getElementById('topN').value = '10';
     document.getElementById('filterCliente').value = '';
+    document.getElementById('sortArticulos').value = 'volumen';
+    document.getElementById('searchArticulos').value = '';
+    document.getElementById('searchEstilos').value = '';
     applyFilters();
 }
 
 // === RENDER ===
-function renderRanking(containerId, data, nameField, descField) {
+function renderRanking(containerId, data, nameField, descField, showMerma) {
     const container = document.getElementById(containerId);
     if (!data || data.length === 0) {
         container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No hay datos disponibles</p></div>';
         return;
     }
-    let html = '';
-    data.forEach((item, i) => {
-        const pos = i + 1;
-        const posClass = pos <= 3 ? `pos-${pos}` : '';
-        const nombre = item[nameField] || 'N/A';
-        const desc = descField && item[descField] ? item[descField] : '';
-        const descHtml = desc ? `<span class="rank-desc">${desc}</span>` : '';
-        html += `<div class="rank-row">
-            <div class="rank-pos ${posClass}">${pos}</div>
-            <div class="rank-name" title="${nombre}${desc ? ' - ' + desc : ''}">${nombre}${descHtml}</div>
+    if (showMerma) {
+        container.innerHTML = data.map((item, i) => renderArticuloCard(item, i + 1)).join('');
+    } else {
+        let html = '';
+        data.forEach((item, i) => {
+            const pos      = i + 1;
+            const posClass = pos <= 3 ? `pos-${pos}` : '';
+            const nombre   = item[nameField] || 'N/A';
+            const desc     = descField && item[descField] ? item[descField] : '';
+            const descHtml = desc ? `<span class="rank-desc">${desc}</span>` : '';
+            html += `<div class="rank-row">
+                <div class="rank-pos ${posClass}">${pos}</div>
+                <div class="rank-name" title="${nombre}${desc ? ' - '+desc : ''}">${nombre}${descHtml}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+}
+
+function renderArticuloCard(item, pos) {
+    const posClass = pos <= 3 ? `pos-${pos}` : '';
+    const nombre   = item.articulo || 'N/A';
+    const desc     = item.articulo_desc || '';
+
+    // Chips superiores
+    const volChip = `<span class="art-vol-chip">📦 ${formatNumber(item.volumen_total)} kg vol.</span>`;
+
+    let mermaBadge = '';
+    let detailHtml = '';
+    const hasMerma = item.pct_merma != null;
+
+    if (hasMerma) {
+        const pct = item.pct_merma;
+        const cls = pct < 1 ? 'merma-low' : pct < 3 ? 'merma-mid' : 'merma-high';
+        const ico = pct < 1 ? '✅' : pct < 3 ? '⚠️' : '🔴';
+        mermaBadge = `<span class="merma-badge ${cls}">${ico} ${fmtDec(pct)}% merma</span>`;
+
+        // KPI row
+        const kpiCls = pct < 1 ? '' : pct < 3 ? 'warn' : 'danger';
+        const kpiRow = `<div class="art-kpi-row">
+            <div class="art-kpi">
+                <div class="art-kpi-val">${formatNumber(item.total_prod_kg)}</div>
+                <div class="art-kpi-label">kg producidos</div>
+            </div>
+            <div class="art-kpi">
+                <div class="art-kpi-val ${kpiCls}">${formatNumber(item.total_merma_kg)}</div>
+                <div class="art-kpi-label">kg merma</div>
+            </div>
+            <div class="art-kpi">
+                <div class="art-kpi-val ${kpiCls}">${fmtDec(pct)}%</div>
+                <div class="art-kpi-label">% de merma</div>
+            </div>
         </div>`;
-    });
-    container.innerHTML = html;
+
+        // Falla progress bars
+        let fallaBars = '';
+        if (item.top3_mermas && item.top3_mermas.length) {
+            fallaBars = '<div class="falla-section-title">Principales causas de merma:</div>';
+            item.top3_mermas.forEach(f => {
+                const barW = Math.min(Math.round(f.pct_merma), 100);
+                fallaBars += `<div class="falla-bar-item">
+                    <div class="falla-bar-header">
+                        <span class="falla-bar-name">${f.falla}${f.sector ? ` <span class="falla-sector-tag">${f.sector}</span>` : ''}</span>
+                        <span class="falla-bar-kg">${formatNumber(f.kilos)} kg</span>
+                    </div>
+                    <div class="falla-track"><div class="falla-fill" style="width:${barW}%"></div></div>
+                    <div class="falla-pct-row">
+                        <span class="falla-pct-prod">🔴 ${fmtDec(f.pct_prod)}% sobre producción</span>
+                        <span class="falla-pct-merma">🟣 ${fmtDec(f.pct_merma)}% de la merma</span>
+                    </div>
+                </div>`;
+            });
+        } else {
+            fallaBars = '<p class="falla-no-data">Sin detalle de fallas registrado</p>';
+        }
+        detailHtml = `<div class="art-detail">${kpiRow}${fallaBars}</div>`;
+    } else {
+        detailHtml = `<div class="art-detail"><p class="falla-no-data">Sin datos de merma registrados para este artículo (2025)</p></div>`;
+    }
+
+    return `<div class="art-card" id="acard-${pos}">
+        <div class="art-header" onclick="toggleCard('acard-${pos}')">
+            <div class="art-pos ${posClass}">${pos}</div>
+            <div class="art-info">
+                <div class="art-code">${nombre}</div>
+                ${desc ? `<div class="art-desc">${desc}</div>` : ''}
+                <div class="art-chips">${volChip}${mermaBadge}</div>
+            </div>
+            <span class="art-toggle">▼</span>
+        </div>
+        ${detailHtml}
+    </div>`;
+}
+
+// Expandir / colapsar una tarjeta
+function toggleCard(cardId) {
+    document.getElementById(cardId)?.classList.toggle('expanded');
+}
+
+// Expandir / colapsar todas
+let _allExpanded = false;
+function toggleAllCards() {
+    _allExpanded = !_allExpanded;
+    document.querySelectorAll('.art-card').forEach(c => c.classList.toggle('expanded', _allExpanded));
+    document.getElementById('btnExpandAll').textContent = _allExpanded ? '− Colapsar' : '+ Ver detalle';
 }
 
 // === HELPERS ===
 function formatNumber(n) { return n == null ? '0' : new Intl.NumberFormat('es-PE').format(Math.round(n)); }
+function fmtDec(n) { return n == null ? '--' : Number(n).toFixed(2); }
 function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
 function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
-// Ocultar filtro cliente al inicio (vista articulos por defecto)
+// Ocultar cliente al inicio (vista articulos por defecto)
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('clienteFilterGroup').style.display = 'none';
 });
