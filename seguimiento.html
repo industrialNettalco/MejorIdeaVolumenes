@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguimiento de Ideas - Mejor Idea</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* --- VARIABLES CSS --- */
+:root {
+    --primary: #4318FF;
+    --primary-light: #868CFF;
+    --primary-dark: #2B3674;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --bg-body: #F4F7FE;
+    --surface: #FFFFFF;
+    --card-bg: rgba(255, 255, 255, 0.65);
+    --card-border: rgba(255, 255, 255, 0.8);
+    --text-main: #1e293b;
+    --text-dark: #2B3674;
+    --text-sec: #64748b;
+    --text-light: #A3AED0;
+    --border: #E0E5F2;
+    --input-bg: rgba(255, 255, 255, 0.6);
+    --shadow-card: 0px 18px 40px rgba(112, 144, 176, 0.12);
+    --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --radius-xs: 8px;
+    --success: #05CD99;
+    --warning: #FFB547;
+    --danger: #EE5D50;
+}
+
+/* --- RESET --- */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+/* --- FONDO AURORA --- */
+.aurora-bg { position: relative; overflow-x: hidden; }
+.aurora-bg::before, .aurora-bg::after { content: ''; position: fixed; width: 600px; height: 600px; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.5; animation: auroraFloat 10s infinite ease-in-out alternate; pointer-events: none; }
+.aurora-bg::before { background: #60a5fa; top: -10%; left: -10%; }
+.aurora-bg::after { background: #c084fc; bottom: -10%; right: -10%; animation-delay: -5s; }
+@keyframes auroraFloat { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
+
+/* --- TIPOGRAFIA --- */
+h1, h2, h3 { font-weight: 700; color: var(--text-dark); line-height: 1.3; }
+.gradient-title { background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* --- CARDS --- */
+.card { background: var(--surface); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-card); border: 1px solid rgba(255,255,255,0.5); }
+.glass-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: var(--shadow-soft); }
+
+/* --- SPINNER --- */
+.spinner { width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; z-index: 9999; }
+
+/* --- LAYOUT --- */
+.container { max-width: 900px; margin: 0 auto; padding: 0 20px 40px; }
+
+/* --- HEADER --- */
+.site-header { position: sticky; top: 0; z-index: 100; padding: 16px 30px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.header-left h1 { font-size: 1.4rem; margin: 0; }
+.header-left p { margin: 0; }
+.header-right { text-align: right; }
+.nav-link { font-size: 0.82rem; color: var(--accent); text-decoration: none; font-weight: 600; transition: opacity 0.2s; }
+.nav-link:hover { opacity: 0.7; }
+
+/* --- HERO BUSCADOR --- */
+.hero-search { text-align: center; padding: 60px 20px 40px; }
+.hero-search h2 { font-size: 1.6rem; margin-bottom: 8px; }
+.hero-search p { color: var(--text-sec); margin-bottom: 28px; font-size: 0.95rem; }
+.search-box { position: relative; max-width: 500px; margin: 0 auto; }
+.search-box input {
+    width: 100%; padding: 16px 22px 16px 50px; border: 2px solid var(--border);
+    border-radius: 50px; font-size: 1rem; color: var(--text-main); background: var(--surface);
+    transition: all 0.3s ease; outline: none; font-family: inherit;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.search-box input:focus { border-color: var(--accent); box-shadow: 0 4px 30px rgba(59,130,246,0.15); }
+.search-box input::placeholder { color: var(--text-light); }
+.search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--text-light); pointer-events: none; }
+.search-hint { font-size: 0.78rem; color: var(--text-light); margin-top: 12px; }
+
+/* --- RESULTADOS SECTION --- */
+.results-section { display: none; }
+.results-section.visible { display: block; }
+
+/* --- RESULTADO COUNT --- */
+.result-count { font-size: 0.82rem; color: var(--text-sec); margin-bottom: 16px; font-weight: 500; display: flex; align-items: center; justify-content: space-between; }
+.btn-back { font-size: 0.82rem; color: var(--accent); background: none; border: none; cursor: pointer; font-weight: 600; font-family: inherit; }
+.btn-back:hover { text-decoration: underline; }
+
+/* --- IDEA CARDS --- */
+.idea-card { background: var(--surface); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 12px; border: 1px solid var(--border); transition: box-shadow 0.2s, border-color 0.2s; }
+.idea-card:hover { box-shadow: 0 4px 20px rgba(59,130,246,0.08); border-color: #93c5fd; }
+
+.idea-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.idea-id { font-size: 0.78rem; font-weight: 700; color: var(--accent); background: rgba(59,130,246,0.08); padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.idea-title { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); flex: 1; line-height: 1.4; }
+.idea-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.idea-meta-item { font-size: 0.78rem; color: var(--text-sec); display: flex; align-items: center; gap: 4px; }
+
+/* --- BADGE DE ETAPA --- */
+.stage-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+.stage-badge.pendiente_jefatura { background: #FFF8E6; color: #D97706; }
+.stage-badge.pendiente_comite { background: #E6F0FF; color: #2563EB; }
+.stage-badge.observada_jefatura, .stage-badge.observada_comite { background: #FFF1F0; color: #C2410C; }
+.stage-badge.aprobada { background: #E6FBF2; color: #059669; }
+.stage-badge.implementada { background: #DCFCE7; color: #15803D; }
+
+/* --- PIPELINE VISUAL --- */
+.pipeline { display: flex; align-items: flex-start; width: 100%; margin-top: 4px; }
+.pipeline-step { display: flex; flex-direction: column; align-items: center; flex: 0 0 auto; position: relative; z-index: 1; }
+.pipeline-connector { flex: 1; height: 3px; margin-top: 14px; background: var(--border); min-width: 20px; }
+.pipeline-connector.done { background: var(--success); }
+.pipeline-connector.review { background: #F97316; }
+
+.pipeline-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; }
+.pipeline-dot.completed { background: linear-gradient(135deg, #05CD99, #00b386); color: white; }
+.pipeline-dot.active { background: linear-gradient(135deg, #3b82f6, #4318FF); color: white; animation: pulse 2s infinite; }
+.pipeline-dot.observed { background: linear-gradient(135deg, #F97316, #EA580C); color: white; }
+.pipeline-dot.pending { background: #E0E5F2; color: #A3AED0; }
+
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); } 50% { box-shadow: 0 0 0 8px rgba(59,130,246,0); } }
+
+.pipeline-label { font-size: 0.62rem; color: var(--text-sec); margin-top: 5px; text-align: center; max-width: 70px; line-height: 1.2; font-weight: 600; }
+
+/* --- MENSAJE MOTIVADOR --- */
+.motivational-msg {
+    margin-top: 14px; padding: 14px 18px; border-radius: var(--radius-xs);
+    background: linear-gradient(135deg, #FFF7ED, #FFFBEB); border: 1px solid #FED7AA;
+    font-size: 0.84rem; color: #92400E; line-height: 1.5;
+}
+.motivational-msg strong { color: #C2410C; }
+
+/* --- EMPTY STATE --- */
+.empty-state { text-align: center; padding: 50px 20px; color: var(--text-sec); }
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+
+/* --- LEYENDA --- */
+.legend { padding: 16px 24px; margin-top: 24px; }
+.legend h3 { font-size: 0.9rem; margin-bottom: 12px; }
+.legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text-sec); }
+.legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+
+/* --- FOOTER --- */
+.site-footer { text-align: center; padding: 24px; color: var(--text-sec); font-size: 0.85rem; margin-top: 20px; }
+
+/* --- RESPONSIVE TABLET --- */
+@media (max-width: 768px) {
+    :root { --radius: 16px; --radius-sm: 10px; }
+    .container { padding: 0 14px 30px; }
+    .site-header { position: relative; padding: 10px 14px; margin-bottom: 14px; gap: 8px; }
+    .header-left h1 { font-size: 1rem; }
+    .header-left p { display: none; }
+    .hero-search { padding: 30px 10px 24px; }
+    .hero-search h2 { font-size: 1.2rem; }
+    .hero-search p { font-size: 0.85rem; }
+    .search-box input { padding: 14px 18px 14px 44px; font-size: 0.95rem; }
+    .idea-card { padding: 14px; margin-bottom: 8px; }
+    .idea-top { flex-direction: column; gap: 8px; }
+    .pipeline-dot { width: 24px; height: 24px; font-size: 0.6rem; }
+    .pipeline-label { font-size: 0.55rem; max-width: 55px; }
+    .pipeline-connector { min-width: 12px; }
+    .legend-grid { grid-template-columns: 1fr 1fr; }
+    .site-footer { padding: 16px; font-size: 0.78rem; }
+}
+
+/* --- RESPONSIVE MOVIL PEQUENO --- */
+@media (max-width: 400px) {
+    .container { padding: 0 8px 20px; }
+    .site-header { padding: 8px 10px; margin-bottom: 10px; }
+    .header-left h1 { font-size: 0.9rem; }
+    .hero-search { padding: 20px 6px 16px; }
+    .hero-search h2 { font-size: 1.05rem; }
+    .search-box input { padding: 12px 14px 12px 40px; font-size: 0.9rem; }
+    .idea-card { padding: 12px; }
+    .pipeline-dot { width: 20px; height: 20px; font-size: 0.5rem; }
+    .pipeline-label { font-size: 0.5rem; max-width: 48px; }
+    .pipeline-connector { min-width: 8px; margin-top: 10px; }
+    .legend-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+.hidden { display: none !important; }
+</style>
+</head>
+
+<body class="aurora-bg">
+
+<!-- LOADING -->
+<div id="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p style="color: var(--text-sec); font-weight: 600;">Cargando seguimiento...</p>
+</div>
+
+<!-- HEADER -->
+<header class="site-header glass-card">
+    <div class="header-left">
+        <img src="logo.png" alt="Nettalco" style="height:40px; object-fit:contain;">
+        <div>
+            <h1 class="gradient-title">Seguimiento de Ideas</h1>
+            <p class="text-muted" style="font-size:0.82rem;">Mejor Idea</p>
+        </div>
+    </div>
+    <div class="header-right">
+        <div id="syncInfo" class="text-muted" style="font-size:0.78rem;"></div>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- HERO BUSCADOR (pantalla inicial) -->
+    <div id="heroSearch" class="hero-search">
+        <h2 class="gradient-title">Consulta el estado de tu idea</h2>
+        <p>Escribe el numero o titulo de tu idea para ver en que etapa se encuentra</p>
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Ej: 42 o mejora de proceso..." autocomplete="off">
+            <button id="btnSearch" onclick="doSearch()" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); padding:10px 20px; border:none; border-radius:50px; background:linear-gradient(135deg,#3b82f6,#4318FF); color:white; font-weight:700; font-size:0.9rem; cursor:pointer; font-family:inherit; transition:opacity 0.2s;">Buscar</button>
+        </div>
+        <p class="search-hint">Escribe y presiona <strong>Buscar</strong> o <strong>Enter</strong> para consultar</p>
+    </div>
+
+    <!-- RESULTADOS (oculto hasta que busque) -->
+    <div id="resultsSection" class="results-section">
+        <div id="resultCount" class="result-count">
+            <span id="resultText"></span>
+            <button class="btn-back" onclick="goBack()">Volver a buscar</button>
+        </div>
+        <div id="ideasList"></div>
+    </div>
+
+    <!-- LEYENDA (siempre visible) -->
+    <div class="legend glass-card">
+        <h3>Leyenda de estados</h3>
+        <div class="legend-grid">
+            <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, #05CD99, #00b386);"></div> Etapa completada</div>
+            <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, #3b82f6, #4318FF);"></div> En revision (etapa actual)</div>
+            <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(135deg, #F97316, #EA580C);"></div> Observada (requiere ajustes)</div>
+            <div class="legend-item"><div class="legend-dot" style="background: #E0E5F2;"></div> Pendiente (aun no llega)</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    Mejor Idea &mdash; Sistema de Seguimiento de Ideas
+</footer>
+
+<script>
+const DATA_URL = 'https://wvxawdxfovsraatopshz.supabase.co/storage/v1/object/public/MejorIdea/ideas_status.json';
+const REFRESH_INTERVAL = 5 * 60 * 1000;
+
+let allData = null;
+
+// --- STAGE CONFIG (amigable: "Observada" en vez de "Rechazada") ---
+const STAGE_CONFIG = {
+    pendiente_jefatura:  { icon: '\u23F3', label: 'Pendiente de revision de jefatura' },
+    pendiente_comite:    { icon: '\u23F3', label: 'Pendiente de revision de comite' },
+    rechazada_jefatura:  { icon: '\uD83D\uDD0D', label: 'Observada por jefatura', css: 'observada_jefatura' },
+    rechazada_comite:    { icon: '\uD83D\uDD0D', label: 'Observada por comite', css: 'observada_comite' },
+    aprobada:            { icon: '\u2713', label: 'Aprobada (doble validacion)' },
+    implementada:        { icon: '\u2B50', label: 'Aprobada e implementada' }
+};
+
+// --- MENSAJES MOTIVADORES ---
+const MOTIVATIONAL_MESSAGES = [
+    "Cada gran idea empieza con un primer intento. Revisa las observaciones y vuelve a presentarla, tu propuesta tiene potencial.",
+    "Las mejores ideas se fortalecen con cada revision. Te animamos a mejorarla y volver a intentarlo.",
+    "No te desanimes, las observaciones son oportunidades para hacer tu idea aun mejor. El equipo espera tu nueva version.",
+    "Tu iniciativa de proponer ideas es muy valiosa. Toma las observaciones como guia para perfeccionarla y presentarla de nuevo.",
+    "Innovar requiere perseverancia. Revisa los comentarios, ajusta tu propuesta y sigue adelante. Tu participacion marca la diferencia."
+];
+
+function getMotivationalMsg(ideaId) {
+    return MOTIVATIONAL_MESSAGES[ideaId % MOTIVATIONAL_MESSAGES.length];
+}
+
+// --- PIPELINE STEPS ---
+function getPipelineSteps(idea) {
+    const steps = [
+        { label: 'Registrada', status: 'completed' },
+        { label: 'Jefatura',   status: 'pending' },
+        { label: 'Comite',     status: 'pending' },
+        { label: 'Aprobada',   status: 'pending' }
+    ];
+
+    switch (idea.etapa) {
+        case 'pendiente_jefatura':
+            steps[1].status = 'active';
+            break;
+        case 'rechazada_jefatura':
+            steps[1].status = 'observed';
+            break;
+        case 'pendiente_comite':
+            steps[1].status = 'completed';
+            steps[2].status = 'active';
+            break;
+        case 'rechazada_comite':
+            steps[1].status = 'completed';
+            steps[2].status = 'observed';
+            break;
+        case 'aprobada':
+            steps[1].status = 'completed';
+            steps[2].status = 'completed';
+            steps[3].status = 'completed';
+            break;
+        case 'implementada':
+            steps[1].status = 'completed';
+            steps[2].status = 'completed';
+            steps[3].status = 'completed';
+            steps[3].label = 'Implementada';
+            break;
+    }
+    return steps;
+}
+
+function getConnectorClass(currentStatus) {
+    if (currentStatus === 'completed') return 'done';
+    if (currentStatus === 'observed') return 'review';
+    return '';
+}
+
+function getDotIcon(status) {
+    switch (status) {
+        case 'completed': return '\u2713';
+        case 'active': return '\u25CF';
+        case 'observed': return '!';
+        default: return '';
+    }
+}
+
+// --- RENDER PIPELINE ---
+function renderPipeline(idea) {
+    const steps = getPipelineSteps(idea);
+    let html = '<div class="pipeline">';
+
+    steps.forEach((step, i) => {
+        html += `<div class="pipeline-step">
+            <div class="pipeline-dot ${step.status}">${getDotIcon(step.status)}</div>
+            <div class="pipeline-label">${step.label}</div>
+        </div>`;
+        if (i < steps.length - 1) {
+            const connClass = getConnectorClass(step.status);
+            html += `<div class="pipeline-connector ${connClass}"></div>`;
+        }
+    });
+
+    html += '</div>';
+    return html;
+}
+
+// --- RENDER IDEA CARD ---
+function renderIdeaCard(idea) {
+    const stageKey = idea.etapa;
+    const stage = STAGE_CONFIG[stageKey] || { icon: '?', label: idea.etapa_label || stageKey };
+    const badgeClass = stage.css || stageKey;
+    const fecha = idea.fecha || '';
+    const edicion = idea.edicion || '';
+    const tipo = idea.tipo || '';
+    const isObservada = stageKey === 'rechazada_jefatura' || stageKey === 'rechazada_comite';
+
+    let motivationalHtml = '';
+    if (isObservada) {
+        motivationalHtml = `<div class="motivational-msg">
+            <strong>💪 No te rindas:</strong> ${getMotivationalMsg(idea.id)}
+        </div>`;
+    }
+
+    return `<div class="idea-card">
+        <div class="idea-top">
+            <span class="idea-id">#${idea.id}</span>
+            <div class="idea-title">${escapeHtml(idea.titulo || 'Sin titulo')}</div>
+            <span class="stage-badge ${badgeClass}">${stage.icon} ${stage.label}</span>
+        </div>
+        <div class="idea-meta">
+            ${fecha ? `<span class="idea-meta-item">📅 ${fecha}</span>` : ''}
+            ${edicion ? `<span class="idea-meta-item">📋 ${edicion}</span>` : ''}
+            ${tipo ? `<span class="idea-meta-item">🏷️ ${tipo}</span>` : ''}
+        </div>
+        ${renderPipeline(idea)}
+        ${motivationalHtml}
+    </div>`;
+}
+
+// --- RENDER IDEAS LIST ---
+function renderIdeas(ideas) {
+    const container = document.getElementById('ideasList');
+    if (!ideas || ideas.length === 0) {
+        container.innerHTML = `<div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>No se encontraron ideas con ese termino</p>
+            <p style="font-size:0.8rem; margin-top:6px; color:var(--text-light);">Intenta con el numero de idea o con otras palabras del titulo</p>
+        </div>`;
+        return;
+    }
+    container.innerHTML = ideas.map(renderIdeaCard).join('');
+}
+
+// --- SEARCH LOGIC ---
+function doSearch() {
+    if (!allData || !allData.ideas) return;
+
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    if (!searchTerm) {
+        // Volver a pantalla de busqueda
+        document.getElementById('heroSearch').style.display = '';
+        document.getElementById('resultsSection').classList.remove('visible');
+        return;
+    }
+
+    const filtered = allData.ideas.filter(idea =>
+        String(idea.id).includes(searchTerm) ||
+        (idea.titulo || '').toLowerCase().includes(searchTerm)
+    );
+
+    // Mostrar resultados, ocultar hero
+    document.getElementById('heroSearch').style.display = 'none';
+    document.getElementById('resultsSection').classList.add('visible');
+    document.getElementById('resultText').textContent =
+        filtered.length === 1
+            ? `1 idea encontrada`
+            : `${filtered.length} ideas encontradas`;
+
+    renderIdeas(filtered);
+}
+
+function goBack() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('heroSearch').style.display = '';
+    document.getElementById('resultsSection').classList.remove('visible');
+    document.getElementById('searchInput').focus();
+}
+
+// --- SYNC INFO ---
+function renderSyncInfo() {
+    if (!allData || !allData.sync_date) return;
+    const d = new Date(allData.sync_date);
+    const fmt = d.toLocaleString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('syncInfo').textContent = `Actualizado: ${fmt}`;
+}
+
+// --- UTILITIES ---
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function showLoading() { document.getElementById('loading').classList.remove('hidden'); }
+function hideLoading() { document.getElementById('loading').classList.add('hidden'); }
+
+// (busqueda solo con Enter o boton, no automatica al escribir)
+
+// --- INIT ---
+async function initApp() {
+    showLoading();
+    try {
+        const resp = await fetch(DATA_URL + '?t=' + Date.now());
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        allData = await resp.json();
+        renderSyncInfo();
+    } catch (err) {
+        console.error('Error cargando datos:', err);
+        document.getElementById('ideasList').innerHTML = `<div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>Error al cargar datos. Intenta recargar la pagina.</p>
+            <p style="font-size: 0.75rem; margin-top: 8px; color: var(--text-light);">${escapeHtml(err.message)}</p>
+        </div>`;
+    }
+    hideLoading();
+
+    // Auto-refresh data silently
+    setInterval(async () => {
+        try {
+            const resp = await fetch(DATA_URL + '?t=' + Date.now());
+            if (resp.ok) {
+                allData = await resp.json();
+                renderSyncInfo();
+                // Re-render if user was viewing results
+                if (document.getElementById('resultsSection').classList.contains('visible')) {
+                    doSearch();
+                }
+            }
+        } catch (e) { /* silent retry */ }
+    }, REFRESH_INTERVAL);
+}
+
+// --- EVENT LISTENERS ---
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+});
+
+// --- START ---
+initApp();
+</script>
+</body>
+</html>
